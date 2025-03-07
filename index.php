@@ -1,6 +1,7 @@
 <?php
 
-
+// Garante que a sessão seja iniciada antes de verificar o login
+session_start();
 
 // Verifica se o usuário está logado
 $logado = isset($_SESSION['usuario_id']);
@@ -8,6 +9,7 @@ $logado = isset($_SESSION['usuario_id']);
 
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,8 +21,9 @@ $logado = isset($_SESSION['usuario_id']);
     <link rel="stylesheet" href="./style/style.css">
     <link rel="shortcut icon" href="assets/Frame 1.png" type="image/x-icon">
 </head>
+
 <body>
-    
+
     <!-- Navbar Responsiva -->
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
@@ -50,17 +53,20 @@ $logado = isset($_SESSION['usuario_id']);
     </nav>
 
     <!-- Hero Section -->
-    <section id="campo" class="hero is-warning is-medium">
-        <div class="hero-body has-text-centered">
-            <p class="title">Encontre Seu Jogo</p>
-            <p class="subtitle">Junte-se a jogadores perto de você e participe de partidas incríveis!</p>
-            <?php if (!$logado): ?>
-                <a href="login.php" class="button is-dark is-large">Comece Agora</a>
-            <?php else: ?>
-                <a href="daoplay.php" class="button is-dark is-large">Encontrar Jogos</a>
-            <?php endif; ?>
+    <section id="campo" class="hero is-medium">
+        <div class="hero-body" id="hero-body">
+            <div class="highlight" id="highlight">
+                <p class="title">Encontre Seu Jogo</p>
+                <p class="subtitle">Junte-se a jogadores perto de você e participe de partidas na sua cidade!</p>
+                <?php if (!$logado): ?>
+                    <a href="login.php" class="button is-info is-large">Comece Agora</a>
+                <?php else: ?>
+                    <a href="daoplay.php" class="button is-info is-large">Encontrar Jogos</a>
+                <?php endif; ?>
+            </div>
         </div>
     </section>
+
 
     <!-- Seção de Recursos -->
     <section class="section">
@@ -127,8 +133,16 @@ $logado = isset($_SESSION['usuario_id']);
         </div>
     </footer>
 
+    <!-- Imagem fixa no canto inferior esquerdo -->
+    <a href="https://brasil.un.org/pt-br/sdgs/3" target="_blank"><img src="assets/SaudeBemEstar.png" alt="Saúde e Bem-Estar" class="img-BemEstar" id="imgBemEstar"></a>
+
+    <div class="card-info" id="cardInfo">
+        <h1>Saúde e Bem-Estar</h1>
+        <p>Garantir o acesso à saúde de qualidade e promover o bem-estar para todos, em todas as idades</p>
+    </div>
+
     <script>
-        // Script para ativar o menu hamburguer
+        // Script para ativar o menu hambúrguer
         document.addEventListener('DOMContentLoaded', () => {
             const navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
             if (navbarBurgers.length > 0) {
@@ -142,6 +156,22 @@ $logado = isset($_SESSION['usuario_id']);
                 });
             }
         });
+
+        // Script para exibir/esconder o card ao passar o mouse
+        document.addEventListener("DOMContentLoaded", function() {
+            const imgBemEstar = document.getElementById("imgBemEstar");
+            const cardInfo = document.getElementById("cardInfo");
+
+            imgBemEstar.addEventListener("mouseover", function() {
+                cardInfo.style.display = "block";
+            });
+
+            imgBemEstar.addEventListener("mouseout", function() {
+                cardInfo.style.display = "none";
+            });
+        });
     </script>
+
 </body>
+
 </html>

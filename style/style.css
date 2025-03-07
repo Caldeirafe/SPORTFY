@@ -47,6 +47,83 @@
 
 }
 
+/*-------------- INDEX ---------------*/
+
+/* Definindo a imagem de fundo da seção */
+#hero-body {
+    position: relative; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Pseudo-elemento para aplicar o blur no fundo */
+#hero-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../assets/GifFinale.gif') no-repeat center center;
+    background-size: 100% 140%;
+
+    z-index: 0;
+}
+
+#hero-body .title,
+#hero-body .subtitle {
+    color: white; 
+    position: relative; 
+    z-index: 1; 
+}
+
+
+
+/* Criar um fundo com blur somente atrás do texto */
+#highlight {
+    background: rgba(0, 0, 0, 0.5); 
+    backdrop-filter: blur(10px); 
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    color: white; 
+    z-index: 1;
+}
+
+
+.img-BemEstar {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.card-info {
+    position: fixed;
+    bottom: 70px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+    width: 200px;
+}
+
+.card-info h1 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.card-info p {
+    font-size: 0.8em;
+}
+
 /*-------------- Body HOME ---------------*/
 
 /*-------------- FORM LOGIN ---------------*/
@@ -67,12 +144,25 @@
 /*------------------ ESPORTES ----------------------*/
 
 
-
+#img-perfil{
+    padding-top: 6%;
+}
 
 /*-------------------- FOOTER ---------------------*/
-#section-login{
-    height: 67vh;
+#section-comp{
+    height: 80vh;
 }
+#section-edit{
+    height: 70vh;
+}
+#section-jogos{
+    height: 80vh;
+}
+
+#section-login{
+    height: 80vh;
+}
+
 .icon {
     align-items: center;
     display: inline-flex;
@@ -93,6 +183,9 @@ a:hover{
 /*---------------------- MEDIA QUERY ------------------------------------*/
 /*-------- Celular ----------*/
 @media screen and (max-width: 932px) {
+    .box {
+        width: 100%;
+    }
 }
 @media screen and (max-width: 1023px) {
     .navbar-menu {

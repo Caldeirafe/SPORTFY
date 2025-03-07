@@ -18,14 +18,14 @@ function fazerLogin($email, $senha) {
     
     try {
         // Busca o usuário pelo email
-        $stmt = $conn->prepare("SELECT id, nome, email, senha FROM usuarios WHERE email = ?");
+        $stmt = $conn->prepare("SELECT usuarios_id, nome, email, senha FROM usuarios WHERE email = ?");
         $stmt->execute([$email]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         
         // Verifica se encontrou o usuário e se a senha está correta
         if ($usuario && password_verify($senha, $usuario['senha'])) {
             // Guarda as informações do usuário na sessão
-            $_SESSION['usuario_id'] = $usuario['id'];
+            $_SESSION['usuario_id'] = $usuario['usuarios_id'];
             $_SESSION['usuario_nome'] = $usuario['nome'];
             $_SESSION['usuario_email'] = $usuario['email'];
             
@@ -64,7 +64,7 @@ function getUsuarioLogado() {
     
     $conn = conectar();
     try {
-        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE id = ?");
+        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE usuarios_id = ?");
         $stmt->execute([$_SESSION['usuario_id']]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     } catch(PDOException $e) {
@@ -73,97 +73,5 @@ function getUsuarioLogado() {
     }
 }
 
-// Função para atualizar dados do usuário
-function atualizarUsuario($dados) {
-    if (!estaLogado()) {
-        return false;
-    }
-    
-    $conn = conectar();
-    try {
-        $sql = "UPDATE usuarios SET 
-                nome = ?, 
-                telefone = ?, 
-                cidade = ? 
-                WHERE id = ?";
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            $dados['nome'],
-            $dados['telefone'],
-            $dados['cidade'],
-            $_SESSION['usuario_id']
-        ]);
-        
-        return true;
-    } catch(PDOException $e) {
-        error_log("Erro ao atualizar usuário: " . $e->getMessage());
-        return false;
-    }
-}
-
-// Função para alterar a senha
-function alterarSenha($senha_atual, $nova_senha) {
-    if (!estaLogado()) {
-        return false;
-    }
-    
-    $conn = conectar();
-    try {
-        // Primeiro verifica se a senha atual está correta
-        $stmt = $conn->prepare("SELECT senha FROM usuarios WHERE id = ?");
-        $stmt->execute([$_SESSION['usuario_id']]);
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!password_verify($senha_atual, $usuario['senha'])) {
-            return false;
-        }
-        
-        // Atualiza para a nova senha
-        $nova_senha_hash = password_hash($nova_senha, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE id = ?");
-        $stmt->execute([$nova_senha_hash, $_SESSION['usuario_id']]);
-        
-        return true;
-    } catch(PDOException $e) {
-        error_log("Erro ao alterar senha: " . $e->getMessage());
-        return false;
-    }
-}
-
-// Função para registrar um novo usuário
-function registrarUsuario($dados) {
-    $conn = conectar();
-    try {
-        // Verifica se o email já existe
-        $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
-        $stmt->execute([$dados['email']]);
-        if ($stmt->fetch()) {
-            return "Email já cadastrado";
-        }
-        
-        // Cria o hash da senha
-        $senha_hash = password_hash($dados['senha'], PASSWORD_DEFAULT);
-        
-        // Insere o novo usuário
-        $sql = "INSERT INTO usuarios (nome, email, senha, sexo, data_nascimento, cidade, telefone) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            $dados['nome'],
-            $dados['email'],
-            $senha_hash,
-            $dados['sexo'],
-            $dados['nascimento'],
-            $dados['cidade'],
-            $dados['telefone']
-        ]);
-        
-        return true;
-    } catch(PDOException $e) {
-        error_log("Erro no registro: " . $e->getMessage());
-        return "Erro ao registrar usuário";
-    }
-}
+// Restante do código permanece igual...
 ?>

@@ -110,24 +110,34 @@ $proximosJogos = getProximosJogos();
         </div>
     </nav>
 
-    <main class="section">
+    <main id="section-jogos" class="section">
         <div class="columns is-desktop">
             <!-- Sidebar do Perfil -->
-            <div class="column is-3">
-                <div class="box">
-                    <div class="has-text-centered">
-                        <figure class="image is-128x128 is-inline-block">
-                            <img class="is-rounded" src="img/usuario.png" alt="Foto de perfil">
-                        </figure>
-                        <h1 class="title is-4"><?php echo htmlspecialchars($usuario['nome']); ?></h1>
-                        <h2 class="subtitle is-6"><?php echo htmlspecialchars($usuario['cidade']); ?></h2>
+            <aside class="column is-3">
+                    <div class="card">
+                        <div class="card-image has-text-centered">
+                            <figure class="image is-128x128 is-inline-block">
+                                <img src="img/usuario.png" alt="Imagem do perfil">
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <p class="title is-4 has-text-centered"><?php echo htmlspecialchars($usuario['nome']); ?></p>
+                            <p class="subtitle is-6 has-text-centered"><?php echo htmlspecialchars($usuario['sexo']); ?> | <?php
+
+                                $data_nascimento = $usuario['data_nascimento']; // Pegando a data do usuário
+                                $data_nascimento_obj = new DateTime($data_nascimento); // Criando um objeto DateTime
+                                $hoje = new DateTime(); // Pegando a data atual
+                                $idade = $hoje->diff($data_nascimento_obj)->y; // Calculando a diferença em anos
+                                echo htmlspecialchars($idade); // Exibindo a idade?> Anos</p>
+                            
+                            <div class="buttons is-centered">
+                                <button class="button is-primary is-fullwidth">Meus Compromissos</button>
+                                <button class="button is-link is-fullwidth">Criar Evento</button>
+                                <a href="editar_perfil.php" class="button is-warning is-fullwidth">Editar Perfil</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="buttons is-centered">
-                        <a href="perfil.php" class="button is-primary is-fullwidth">Meu Perfil</a>
-                        <a href="daoplay.php" class="button is-link is-fullwidth">Criar Evento</a>
-                    </div>
-                </div>
-            </div>
+                </aside>
 
             <!-- Conteúdo Principal -->
             <div class="column is-9">

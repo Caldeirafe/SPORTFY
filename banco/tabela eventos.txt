@@ -1,0 +1,17 @@
+CREATE TABLE eventos (
+    evento_id INT AUTO_INCREMENT PRIMARY KEY,         -- Identificador único do evento
+    usuario_id INT NOT NULL,                           -- ID do usuário que criou o evento
+    evento_nome VARCHAR(255) NOT NULL,                 -- Nome do evento
+    evento_data DATE NOT NULL,                         -- Data do evento
+    evento_hora TIME NOT NULL,                         -- Hora do evento
+    evento_max_pessoas INT NOT NULL,                   -- Número máximo de pessoas para o evento
+    inscritos INT NOT NULL DEFAULT 0,                  -- Número de inscritos no evento
+    evento_local VARCHAR(255) NOT NULL,                -- Local onde o evento ocorrerá
+    evento_esporte ENUM('futebol', 'basquete', 'volei', 'outros') NOT NULL,  -- Esporte do evento
+    evento_descricao TEXT NOT NULL,                    -- Descrição do evento
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,     -- Data de criação do evento (automática)
+    evento_latitude DOUBLE NOT NULL,                   -- Latitude do evento (para cálculos de proximidade)
+    evento_longitude DOUBLE NOT NULL,                  -- Longitude do evento (para cálculos de proximidade)
+    
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(usuarios_id) ON DELETE CASCADE -- Relacionamento com a tabela usuarios
+);

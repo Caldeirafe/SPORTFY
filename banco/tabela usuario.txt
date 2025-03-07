@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS usuarios (
+    usuarios_id INT AUTO_INCREMENT PRIMARY KEY,      -- Identificador único do usuário
+    nome VARCHAR(100) NOT NULL,                       -- Nome completo do usuário
+    email VARCHAR(100) NOT NULL UNIQUE,               -- Endereço de e-mail (único para cada usuário)
+    senha VARCHAR(255) NOT NULL,                      -- Senha do usuário (armazenada de forma segura)
+    sexo ENUM('masculino', 'feminino') NOT NULL,      -- Sexo do usuário (masculino ou feminino)
+    data_nascimento DATE NOT NULL,                    -- Data de nascimento do usuário
+    cidade VARCHAR(100) NOT NULL,                     -- Cidade onde o usuário reside
+    estado CHAR(2) NOT NULL,                          -- Estado (abreviação de 2 letras)
+    telefone VARCHAR(20) NOT NULL,                    -- Número de telefone do usuário
+    foto VARCHAR(255) DEFAULT NULL,                   -- Caminho para a foto do usuário (opcional)
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Data e hora de cadastro do usuário (automática)
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Data da última atualização (automática)
+    usuario_latitude DOUBLE NOT NULL,                 -- Latitude do usuário
+    usuario_longitude DOUBLE NOT NULL                 -- Longitude do usuário
+);

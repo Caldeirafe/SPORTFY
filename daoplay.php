@@ -1,9 +1,30 @@
 <?php
-
-
+session_start();
+require_once 'config.php';
+$pdo = conectar();
 
 // Verifica se o usuário está logado
 $logado = isset($_SESSION['usuario_id']);
+$usuario_id = $_SESSION['usuario_id'] ?? null;
+
+// Obtém o termo da pesquisa, se existir
+$busca = isset($_GET['busca']) ? trim($_GET['busca']) : '';
+
+// Monta a consulta SQL filtrando pelo nome do evento, local ou esporte, se houver busca
+if (!empty($busca)) {
+    $sql = "SELECT * FROM eventos 
+            WHERE (evento_nome LIKE :busca OR evento_local LIKE :busca OR evento_esporte LIKE :busca) 
+            AND evento_data >= CURDATE() 
+            ORDER BY evento_data ASC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':busca', "%$busca%", PDO::PARAM_STR);
+} else {
+    $sql = "SELECT * FROM eventos WHERE evento_data >= CURDATE() ORDER BY evento_data ASC";
+    $stmt = $pdo->prepare($sql);
+}
+
+$stmt->execute();
+$eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +76,13 @@ $logado = isset($_SESSION['usuario_id']);
             <p class="title">Da o Play</p>
             <p class="subtitle">Encontre partidas e quadras disponíveis na sua região!</p>
             <div class="container has-text-centered">
-                <a href="cadastro.php" class="button is-dark is-large">Cadastrar-se</a>
+                <?php if ($logado): ?>
+                    <!-- Usuário logado: mostrar botão "Criar Novo Jogo" -->
+                    <a href="perfil.php?Ajax=NovoJogo" class="button is-dark is-large">Criar Novo Jogo</a>
+                <?php else: ?>
+                    <!-- Usuário não logado: mostrar botão "Cadastre-se" -->
+                    <a href="cadastro.php" class="button is-dark is-large">Cadastre-se</a>
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -65,14 +92,16 @@ $logado = isset($_SESSION['usuario_id']);
         <div class="container">
             <div class="box">
                 <h2 class="title is-4">Busque por jogos ou quadras</h2>
-                <div class="field has-addons">
-                    <div class="control is-expanded">
-                        <input class="input" type="text" placeholder="Digite o esporte ou local...">
+                <form method="GET" action="">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input" type="text" name="busca" placeholder="Digite o esporte ou local..." value="<?= isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : '' ?>">
+                        </div>
+                        <div class="control">
+                            <button class="button is-primary" type="submit"><i class="fas fa-search"></i></button>
+                        </div>
                     </div>
-                    <div class="control">
-                        <button class="button is-primary"><i class="fas fa-search"></i></button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </section>
@@ -84,48 +113,61 @@ $logado = isset($_SESSION['usuario_id']);
 
             <div class="columns is-multiline">
 
-                <!-- Card 1 -->
-                <div class="column is-4">
-                    <div class="card">
-                        <div class="card-content">
-                            <p class="title is-5">Futebol Society</p>
-                            <p class="subtitle is-6">Local: Arena Santos</p>
-                            <p><strong>Data:</strong> 15/02/2025 | <strong>Horário:</strong> 19h</p>
-                            <button class="button is-success is-fullwidth mt-2">Participar</button>
-                        </div>
-                    </div>
-                </div>
+                <?php foreach ($eventos as $evento): ?>
+                    <div class="column is-4">
+                        <div class="card">
+                            <div class="card-content">
+                                <p class="title is-5"><?= htmlspecialchars($evento['evento_nome']) ?></p>
+                                <p><strong>Local:</strong> <?= htmlspecialchars($evento['evento_local']) ?> |
+                                    <strong>Esporte:</strong> <?= htmlspecialchars($evento['evento_esporte']) ?></p>
+                                <p><strong>Data:</strong> <?= date('d/m/Y', strtotime($evento['evento_data'])) ?> | 
+                                    <strong>Horário:</strong> <?= htmlspecialchars($evento['evento_hora']) ?></p>
+                                <p><strong>Participantes:</strong> <?= $evento['inscritos'] ?> / <?= $evento['evento_max_pessoas'] ?> pessoas</p>
+                                <p><strong>Descrição:</strong> <?= nl2br(htmlspecialchars($evento['evento_descricao'])) ?></p>
 
-                <!-- Card 2 -->
-                <div class="column is-4">
-                    <div class="card">
-                        <div class="card-content">
-                            <p class="title is-5">Basquete 3x3</p>
-                            <p class="subtitle is-6">Local: Ginásio Municipal</p>
-                            <p><strong>Data:</strong> 18/02/2025 | <strong>Horário:</strong> 18h</p>
-                            <button class="button is-success is-fullwidth mt-2">Participar</button>
-                        </div>
-                    </div>
-                </div>
+                                <?php
+                                // Verifica se o usuário é o criador ou um participante
+                                $isCriador = ($evento['usuario_id'] == $usuario_id);
+                                $isParticipante = false;
 
-                <!-- Card 3 -->
-                <div class="column is-4">
-                    <div class="card">
-                        <div class="card-content">
-                            <p class="title is-5">Vôlei de Praia</p>
-                            <p class="subtitle is-6">Local: Praia do Gonzaga</p>
-                            <p><strong>Data:</strong> 20/02/2025 | <strong>Horário:</strong> 16h</p>
-                            <button class="button is-success is-fullwidth mt-2">Participar</button>
+                                if ($usuario_id) {
+                                    $stmt = $pdo->prepare("SELECT * FROM participacoes WHERE evento_id = ? AND usuario_id = ?");
+                                    $stmt->execute([$evento['evento_id'], $usuario_id]);
+                                    if ($stmt->fetch()) {
+                                        $isParticipante = true;
+                                    }
+                                }
+                                ?>
+
+                                <!-- Botões de Ação -->
+                                <div class="buttons mt-3">
+                                    <?php if ($isCriador): ?>
+                                        <!-- Botões de Editar e Excluir para o Criador -->
+                                        <a href="editar_evento.php?evento_id=<?= $evento['evento_id'] ?>" class="button is-warning">Editar</a>
+                                        <form method="POST" action="deletar_evento.php" style="display:inline;">
+                                            <input type="hidden" name="evento_id" value="<?= $evento['evento_id'] ?>">
+                                            <button type="submit" class="button is-danger" onclick="return confirm('Tem certeza que deseja excluir este evento?')">Excluir</button>
+                                        </form>
+                                    <?php elseif ($isParticipante): ?>
+                                        <!-- Botão de Desistir para Participantes -->
+                                        <form method="POST" action="desistir_evento.php" style="display:inline;">
+                                            <input type="hidden" name="evento_id" value="<?= $evento['evento_id'] ?>">
+                                            <button type="submit" class="button is-danger" onclick="return confirm('Tem certeza que deseja desistir deste evento?')">Desistir</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <!-- Botão de Participar -->
+                                        <form method="POST" action="participar_evento.php" class="mt-2">
+                                            <input type="hidden" name="evento_id" value="<?= $evento['evento_id'] ?>">
+                                            <button type="submit" class="button is-success is-fullwidth">Participar</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php endforeach; ?>
 
             </div>
-
-            <div class="has-text-centered mt-5">
-                <button class="button is-primary is-large">Criar Novo Jogo</button>
-            </div>
-
         </div>
     </section>
 
@@ -143,7 +185,7 @@ $logado = isset($_SESSION['usuario_id']);
     </footer>
 
     <script>
-        // Script para ativar o menu hamburguer
+        // Script para ativar o menu hambúrguer
         document.addEventListener('DOMContentLoaded', () => {
             const navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
             if (navbarBurgers.length > 0) {
@@ -157,7 +199,8 @@ $logado = isset($_SESSION['usuario_id']);
                 });
             }
         });
-    </script>
+        </script>
 
 </body>
+
 </html>

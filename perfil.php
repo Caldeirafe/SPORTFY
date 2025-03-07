@@ -3,20 +3,19 @@ require_once 'config.php';
 require_once 'auth.php';
 
 // Verifica se está logado
-//verificaLogin();
+verificaLogin();
+
+// Verifica se a variável 'atualizado' está presente no URL e exibe a mensagem
+if (isset($_GET['atualizado']) && $_GET['atualizado'] == 'sucesso') {
+    echo '<script>alert("Perfil atualizado com sucesso!");</script>';
+}
 
 // Busca dados do usuário
 $conn = conectar();
-$stmt = $conn->prepare("SELECT * FROM usuarios WHERE id = ?");
+$stmt = $conn->prepare("SELECT * FROM usuarios WHERE usuarios_id = ?");
 $stmt->execute([$_SESSION['usuario_id']]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
-
-
-<!-- Substitua os dados estáticos pelos dados do usuário -->
-<p class="title is-4 has-text-centered"><?php echo htmlspecialchars($usuario['nome']); ?></p>
-<!-- Adicione o botão de logout -->
-<button class="button is-danger is-fullwidth" onclick="window.location.href='logout.php'">Sair</button>
 
 <!DOCTYPE html>
 <html lang="pt">
@@ -33,15 +32,10 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 </head>
 <body>
 
-    <!-- Substitua os dados estáticos pelos dados do usuário -->
-    <p class="title is-4 has-text-centered"><?php echo htmlspecialchars($usuario['nome']); ?></p>
-    <!-- Adicione o botão de logout -->
-    <button class="button is-danger is-fullwidth" onclick="window.location.href='logout.php'">Sair</button>
-
     <!-- Navbar Responsiva -->
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <a class="navbar-item" href="index.html">
+            <a class="navbar-item" href="index.php">
                 <img src="assets/Logo.png" alt="Logo Sportify">
             </a>
             <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
@@ -56,6 +50,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                 <a class="navbar-item" href="index.php">Home</a>
                 <a class="navbar-item" href="daoplay.php">Da o Play</a>
                 <a class="navbar-item" href="perfil.php">Perfil</a>
+                <a class="navbar-item" href="logout.php">Sair</a>
             </div>
         </div>
     </nav>
@@ -69,37 +64,43 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                 <aside class="column is-3">
                     <div class="card">
                         <div class="card-image has-text-centered">
-                            <figure class="image is-128x128 is-inline-block">
-                                <img src="img/usuario.png" alt="Imagem do perfil">
+                            <figure id="img-perfil" class="image is-128x128 is-inline-block">
+                            <img src="<?php echo $usuario['foto'] ? 'uploads/' . htmlspecialchars($usuario['foto']) : 'img/usuario.png'; ?>" alt="Imagem do perfil">
                             </figure>
                         </div>
                         <div class="card-content">
-                            <p class="title is-4 has-text-centered">Nome do Usuário</p>
-                            <p class="subtitle is-6 has-text-centered">Sexo | Idade</p>
+                            <p class="title is-4 has-text-centered"><?php echo htmlspecialchars($usuario['nome']); ?></p>
+                            <p class="subtitle is-6 has-text-centered"><?php echo htmlspecialchars($usuario['sexo']); ?> | <?php
+
+                                $data_nascimento = $usuario['data_nascimento']; // Pegando a data do usuário
+                                $data_nascimento_obj = new DateTime($data_nascimento); // Criando um objeto DateTime
+                                $hoje = new DateTime(); // Pegando a data atual
+                                $idade = $hoje->diff($data_nascimento_obj)->y; // Calculando a diferença em anos
+                                echo htmlspecialchars($idade); // Exibindo a idade?> Anos</p>
                             
                             <div class="buttons is-centered">
-                                <button class="button is-primary is-fullwidth">Meus Compromissos</button>
-                                <button class="button is-link is-fullwidth">Criar Evento</button>
-                                <button class="button is-warning is-fullwidth">Editar Perfil</button>
+                            <button class="button is-info is-fullwidth" onclick="carregarConteudo('perfil_info')">Início</button>
+                                <button class="button is-primary is-fullwidth" onclick="carregarConteudo('compromissos')">Meus Compromissos</button>
+                                <button class="button is-link is-fullwidth" onclick="carregarConteudo('criar_evento')">Criar Evento</button>
+                                <button class="button is-warning is-fullwidth" onclick="carregarConteudo('editar_perfil')">Editar Perfil</button>
                             </div>
                         </div>
                     </div>
                 </aside>
 
-                <!-- Conteúdo do Perfil -->
-                <div class="column is-9">
-                    <div class="box has-text-centered">
-                        <h3 class="title is-4">Próximos Jogos</h3>
-                        <a href="perfil_proximos_jogos.html" class="button is-success">Ver Jogos</a>
-                    </div>
+                    <!-- Conteúdo do Perfil (Carregamento dinâmico) -->
 
-                    <!-- Mapa -->
-                    <div class="box">
-                        <h3 class="title is-4 has-text-centered">Localização</h3>
-                        <iframe class="has-ratio" width="100%" height="400" src="https://www.google.com/maps/embed?..." allowfullscreen></iframe>
+                <div class="column is-10">
+                    <div id="conteudoDinamico">
+                        <?php
+                            if(!isset ($_GET['Ajax']) || ($_GET['Ajax']) != 'NovoJogo') {
+                                include 'perfil_info.php';
+                            }else {
+                                 include 'criar_evento.php'; // Carrega o perfil por padrão
+                            }
+                        ?>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -118,6 +119,14 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     </footer>
 
     <script>
+
+        
+        // Adicione dentro da tag <script> existente
+function atualizarImagemPerfil() {
+    // Recarregar a página para mostrar a imagem atualizada
+    location.reload();
+}
+
         // Script para ativar o menu hamburguer
         document.addEventListener('DOMContentLoaded', () => {
             const navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
@@ -132,6 +141,16 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                 });
             }
         });
+
+        function carregarConteudo(pagina) {
+            fetch(pagina + '.php')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('conteudoDinamico').innerHTML = html;
+                })
+                .catch(error => console.error('Erro ao carregar conteúdo:', error));
+        }
+
     </script>
 
 </body>

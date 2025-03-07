@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS participacoes ( 
+    id INT AUTO_INCREMENT PRIMARY KEY,  -- Identificador único da participação
+    usuario_id INT,  -- ID do usuário que participa
+    evento_id INT,  -- ID do evento no qual o usuário participa
+    data_participacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Data e hora da participação
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(usuarios_id),  -- Relacionamento com a tabela de usuários
+    FOREIGN KEY (evento_id) REFERENCES eventos(evento_id) ON DELETE CASCADE,  -- Relacionamento com a tabela de eventos, excluindo participações quando o evento for deletado
+    UNIQUE (usuario_id, evento_id)  -- Garantindo que um usuário só participe uma vez por evento
+);
