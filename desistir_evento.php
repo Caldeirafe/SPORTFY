@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['evento_id'])) {
         $stmt->execute([$evento_id, $usuario_id]);
 
         // Redireciona após a desistência
-        header('Location: perfil.php?desistiu=sucesso');
+        header('Location: daoplay.php?status=desistiu');
         exit;
     } else {
         echo "Você não está inscrito neste evento.";

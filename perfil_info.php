@@ -12,7 +12,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                 <div class="column is-11">
                     <div class="box has-text-centered">
                         <h3 class="title is-4">Próximos Jogos</h3>
-                        <a href="#" class="button is-success">Ver Jogos</a>
+                        <a href="daoplay.php" class="button is-success">Ver Jogos</a>
                     </div> 
 
                     <!-- Mapa -->

@@ -13,19 +13,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario_id = $_SESSION['usuario_id'];
 
     // Verifica se o usuário já está inscrito
-    $stmt = $pdo->prepare("SELECT * FROM participacoes WHERE evento_id = ? AND usuario_id = ?");
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM participacoes WHERE evento_id = ? AND usuario_id = ?");
     $stmt->execute([$evento_id, $usuario_id]);
-    if ($stmt->fetch()) {
+    if ($stmt->fetchColumn() > 0) {
         echo "Você já está inscrito neste evento.";
         exit;
     }
 
-    // Verifica se o evento ainda tem vagas disponíveis, contando o criador como participante
-    $stmt = $pdo->prepare("SELECT evento_max_pessoas, usuario_id AS criador_id, 
-                        (SELECT COUNT(*) FROM participacoes WHERE evento_id = ?) + 1 AS inscritos 
-                        FROM eventos WHERE evento_id = ?");
-    $stmt->execute([$evento_id, $evento_id]);
-    $evento = $stmt->fetch();
+    // Busca informações sobre o evento
+    $stmt = $pdo->prepare("
+        SELECT evento_max_pessoas, 
+            (SELECT COUNT(*) FROM participacoes WHERE evento_id = eventos.evento_id) AS inscritos 
+        FROM eventos 
+        WHERE evento_id = ?
+    ");
+    $stmt->execute([$evento_id]);
+    $evento = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Verifica se o evento foi encontrado
+    if (!$evento) {
+        echo "Evento não encontrado.";
+        exit;
+    }
 
     // Verifica se o evento já está lotado
     if ($evento['inscritos'] >= $evento['evento_max_pessoas']) {
@@ -37,12 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("INSERT INTO participacoes (usuario_id, evento_id) VALUES (?, ?)");
     $stmt->execute([$usuario_id, $evento_id]);
 
-    // Atualiza o contador de inscritos na tabela eventos
-    $stmt = $pdo->prepare("UPDATE eventos SET inscritos = inscritos + 1 WHERE evento_id = ?");
-    $stmt->execute([$evento_id]);
-
     // Redireciona para a página principal após a inscrição
-    header('Location: index.php');
+    header('Location: daoplay.php?status=participou');
     exit;
 }
 ?>

@@ -124,6 +124,13 @@
     font-size: 0.8em;
 }
 
+.button.is-info {
+    background-color: #3e8ed0;
+    border-color: transparent;
+    color: #fff;
+    margin-left: 1%;
+}
+
 /*-------------- Body HOME ---------------*/
 
 /*-------------- FORM LOGIN ---------------*/

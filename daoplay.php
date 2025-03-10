@@ -25,6 +25,8 @@ if (!empty($busca)) {
 
 $stmt->execute();
 $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -108,68 +110,55 @@ $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Seção de Partidas Disponíveis -->
     <section class="section">
-        <div class="container">
-            <h2 class="title is-4 has-text-centered">Partidas Disponíveis</h2>
-
-            <div class="columns is-multiline">
-
-                <?php foreach ($eventos as $evento): ?>
-                    <div class="column is-4">
-                        <div class="card">
-                            <div class="card-content">
-                                <p class="title is-5"><?= htmlspecialchars($evento['evento_nome']) ?></p>
-                                <p><strong>Local:</strong> <?= htmlspecialchars($evento['evento_local']) ?> |
-                                    <strong>Esporte:</strong> <?= htmlspecialchars($evento['evento_esporte']) ?></p>
-                                <p><strong>Data:</strong> <?= date('d/m/Y', strtotime($evento['evento_data'])) ?> | 
-                                    <strong>Horário:</strong> <?= htmlspecialchars($evento['evento_hora']) ?></p>
-                                <p><strong>Participantes:</strong> <?= $evento['inscritos'] ?> / <?= $evento['evento_max_pessoas'] ?> pessoas</p>
-                                <p><strong>Descrição:</strong> <?= nl2br(htmlspecialchars($evento['evento_descricao'])) ?></p>
-
-                                <?php
-                                // Verifica se o usuário é o criador ou um participante
-                                $isCriador = ($evento['usuario_id'] == $usuario_id);
-                                $isParticipante = false;
-
-                                if ($usuario_id) {
-                                    $stmt = $pdo->prepare("SELECT * FROM participacoes WHERE evento_id = ? AND usuario_id = ?");
-                                    $stmt->execute([$evento['evento_id'], $usuario_id]);
-                                    if ($stmt->fetch()) {
-                                        $isParticipante = true;
-                                    }
+    <div class="container">
+        <h2 class="title is-4 has-text-centered">Partidas Disponíveis</h2>
+        <div class="columns is-multiline">
+            <?php foreach ($eventos as $evento): ?>
+                <div class="column is-4">
+                    <div class="card is-flex is-flex-direction-column" style="height: 100%;">
+                        <div class="card-content is-flex-grow-1">
+                            <p class="title is-5"><?= htmlspecialchars($evento['evento_nome']) ?></p>
+                            <p><strong>Local:</strong> <?= htmlspecialchars($evento['evento_local']) ?></p>
+                            <p><strong>Esporte:</strong> <?= htmlspecialchars($evento['evento_esporte']) ?></p>
+                            <p><strong>Data:</strong> <?= date('d/m/Y', strtotime($evento['evento_data'])) ?></p>
+                            <p><strong>Horário:</strong> <?= date('H:i', strtotime($evento['evento_hora'])) ?></p>
+                            <p><strong>Participantes:</strong> <?= $evento['inscritos'] ?? 0 ?> / <?= $evento['evento_max_pessoas'] ?></p>
+                            <p><strong>Descrição:</strong> <?= nl2br(htmlspecialchars($evento['evento_descricao'])) ?></p>
+                        </div>
+                        <div class="card-footer">
+                            <?php 
+                            $isCriador = ($evento['usuario_id'] == $usuario_id);
+                            $isParticipante = false;
+                            
+                            if ($usuario_id) {
+                                $stmt = $pdo->prepare("SELECT * FROM participacoes WHERE evento_id = ? AND usuario_id = ?");
+                                $stmt->execute([$evento['evento_id'], $usuario_id]);
+                                if ($stmt->fetch()) {
+                                    $isParticipante = true;
                                 }
-                                ?>
+                            }
+                            ?>
 
-                                <!-- Botões de Ação -->
-                                <div class="buttons mt-3">
-                                    <?php if ($isCriador): ?>
-                                        <!-- Botões de Editar e Excluir para o Criador -->
-                                        <a href="editar_evento.php?evento_id=<?= $evento['evento_id'] ?>" class="button is-warning">Editar</a>
-                                        <form method="POST" action="deletar_evento.php" style="display:inline;">
-                                            <input type="hidden" name="evento_id" value="<?= $evento['evento_id'] ?>">
-                                            <button type="submit" class="button is-danger" onclick="return confirm('Tem certeza que deseja excluir este evento?')">Excluir</button>
-                                        </form>
-                                    <?php elseif ($isParticipante): ?>
-                                        <!-- Botão de Desistir para Participantes -->
-                                        <form method="POST" action="desistir_evento.php" style="display:inline;">
-                                            <input type="hidden" name="evento_id" value="<?= $evento['evento_id'] ?>">
-                                            <button type="submit" class="button is-danger" onclick="return confirm('Tem certeza que deseja desistir deste evento?')">Desistir</button>
-                                        </form>
-                                    <?php else: ?>
-                                        <!-- Botão de Participar -->
-                                        <form method="POST" action="participar_evento.php" class="mt-2">
-                                            <input type="hidden" name="evento_id" value="<?= $evento['evento_id'] ?>">
-                                            <button type="submit" class="button is-success is-fullwidth">Participar</button>
-                                        </form>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
+                            <?php if ($isCriador): ?>
+                                <button type="button" class="button is-primary is-fullwidth" disabled>Participar</button>
+                            <?php elseif ($isParticipante): ?>
+                                <form method="POST" action="desistir_evento.php" class="card-footer-item">
+                                    <input type="hidden" name="evento_id" value="<?= $evento['evento_id'] ?>">
+                                    <button type="submit" class="button is-danger is-fullwidth">Desistir</button>
+                                </form>
+                            <?php else: ?>
+                                <form method="POST" action="participar_evento.php" class="card-footer-item">
+                                    <input type="hidden" name="evento_id" value="<?= $evento['evento_id'] ?>">
+                                    <button type="submit" class="button is-success is-fullwidth">Participar</button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     </div>
-                <?php endforeach; ?>
-
-            </div>
+                </div>
+            <?php endforeach; ?>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Rodapé -->
     <footer class="footer has-background-dark has-text-white">
@@ -199,6 +188,18 @@ $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 });
             }
         });
+
+          // Verifica se há um parâmetro "status" na URL e exibe um alerta correspondente
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+
+        if (status === "participou") {
+            alert("Você se inscreveu no evento com sucesso!");
+        } else if (status === "desistiu") {
+            alert("Você desistiu do evento.");
+        }
+    });
         </script>
 
 </body>
