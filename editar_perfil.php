@@ -16,12 +16,6 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         <div class="box">
             <h3 class="title is-4 has-text-centered">Editar Perfil</h3>
 
-            <!-- Exibe erro caso ocorra -->
-            <?php if (isset($_GET['erro'])): ?>
-                <div class="notification is-danger">
-                    <?php echo htmlspecialchars($_GET['erro']); ?>
-                </div>
-            <?php endif; ?>
 
             <!-- Formulário de Edição de Perfil -->
             <form method="POST" action="atualizar_perfil.php" enctype="multipart/form-data">
@@ -50,6 +44,10 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                         </label>
                     </div>
                     <p class="help">Formatos suportados: JPG e PNG.</p>
+                    <!-- Exibe erro caso ocorra -->
+                    <?php if (isset($_GET['erro'])): ?>
+                        <?php echo htmlspecialchars($_GET['erro']); ?>              
+                    <?php endif; ?>
 
 
                 <!-- Campo Telefone -->

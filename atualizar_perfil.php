@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $foto_ext = strtolower(pathinfo($foto_nome, PATHINFO_EXTENSION));
 
         // Valida a extensão do arquivo
-        $extensoes_permitidas = ['jpg', 'jpeg', 'png'];
+        $extensoes_permitidas = ['jpg', 'jpeg', 'png', 'jfif'];
         if (in_array($foto_ext, $extensoes_permitidas)) {
             // Define o nome e o caminho da foto
             $novo_nome_foto = 'perfil_' . $user_id . '.' . $foto_ext;
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             move_uploaded_file($foto_tmp, $caminho_foto);
         } else {
             // Caso a foto não tenha a extensão permitida
-            header("Location: editar_perfil.php?erro=Formato de foto não permitido. Apenas JPG e PNG são aceitos.");
+            header("Location: perfil.php?erro=Formato de foto não permitido. Apenas JPG e PNG são aceitos.");
             exit;
         }
     } else {

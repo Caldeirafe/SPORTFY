@@ -120,6 +120,24 @@ $logado = isset($_SESSION['usuario_id']);
         </div>
     </section>
 
+            <!-- Seção Sobre -->
+            <section class="info-section">
+        <div class="info-container">
+            <div class="info-content has-text-centered">
+                <h1 class="info-title">Sobre o Sportfy</h1>
+                <p>O <strong>Sportfy</strong> é uma plataforma criada para conectar pessoas através do esporte. Seu principal objetivo é facilitar a formação de times e partidas, tornando mais fácil encontrar jogadores disponíveis para completar um jogo.</p>
+                <p>Se estiver faltando jogadores para iniciar uma partida, basta criar um anúncio e aguardar confirmações. Da mesma forma, se você estiver procurando um jogo para participar, pode encontrar uma partida próxima a você.</p>
+                <p>Nosso objetivo é incentivar a prática esportiva, promover a socialização e eliminar barreiras para quem quer jogar.</p>
+                <p>Estamos alinhados com a <strong>ODS 3</strong> (Objetivos de Desenvolvimento Sustentável das Nações Unidas), que busca garantir o acesso à saúde de qualidade e promover o bem-estar para todos, em todas as idades.</p>
+                <h2 class="info-subtitle"><a href="login.php">🌟 Entre na onda e participe!</a></h2>
+                <p>Não fique de fora! Junte-se à comunidade do Sportfy e faça parte dessa rede de jogadores. O jogo só começa quando todos entram em campo! 🏆⚽🏀🎾</p>
+                <!-- Botão Teste -->
+                <!-- <a href="login.php" class="info-button">Junte-se Agora</a> -->
+            </div>
+        </div>
+    </section>
+
+
     <!-- Rodapé -->
     <footer class="footer has-background-dark has-text-white">
         <div class="content has-text-centered">

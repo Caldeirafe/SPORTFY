@@ -15,8 +15,9 @@ $conn = conectar();
 $stmt = $conn->prepare("SELECT * FROM usuarios WHERE usuarios_id = ?");
 $stmt->execute([$_SESSION['usuario_id']]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-?>
 
+
+?>
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -96,7 +97,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                             if(!isset ($_GET['Ajax']) || ($_GET['Ajax']) != 'NovoJogo') {
                                 include 'perfil_info.php';
                             }else {
-                                 include 'criar_evento.php'; // Carrega o perfil por padrão
+                                 include 'criar_evento.php'; 
                             }
                         ?>
                     </div>

@@ -93,7 +93,7 @@ $participantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 echo htmlspecialchars($idade); // Exibindo a idade?> Anos</p>
                             
                             <div class="buttons is-centered">
-                                <a href="perfil.php" class="button is-warning is-fullwidth">Voltar</a>
+                                <a href="perfil.php?Ajax=Compromissos" class="button is-warning is-fullwidth">Voltar</a>
                             </div>
                         </div>
                     </div>

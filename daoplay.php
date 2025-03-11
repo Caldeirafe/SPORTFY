@@ -82,7 +82,7 @@ $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php if (!$logado): ?>
                     <a href="login.php" class="button is-success is-large">Cadastre-se</a>
                 <?php else: ?>
-                    <a href="daoplay.php" class="button is-success is-large">Criar Novo Jogo</a>
+                    <a href="perfil.php?Ajax=NovoJogo" class="button is-success is-large">Criar Novo Jogo</a>
                 <?php endif; ?>
             </div>
         </div>

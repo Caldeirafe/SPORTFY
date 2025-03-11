@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $conn = conectar();
 
         // Prepara a SQL de inserção
-        $sql = "INSERT INTO eventos (usuario_id, evento_nome, evento_data, evento_hora, evento_max_pessoas, evento_local, evento_esporte, evento_descricao) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO eventos (usuario_id, evento_nome, evento_data, evento_hora, evento_max_pessoas, inscritos, evento_local, evento_esporte, evento_descricao) 
+                VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
 
         // Vincula os parâmetros
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "Erro ao criar evento: " . implode(", ", $stmt->errorInfo());
         }
         
-        $stmt->close();
+        //$stmt->close();
     } catch (PDOException $e) {
         echo "Erro ao criar evento: " . $e->getMessage();
     }
