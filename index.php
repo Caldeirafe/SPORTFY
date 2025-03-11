@@ -59,9 +59,9 @@ $logado = isset($_SESSION['usuario_id']);
                 <p class="title">Encontre Seu Jogo</p>
                 <p class="subtitle">Junte-se a jogadores perto de você e participe de partidas na sua cidade!</p>
                 <?php if (!$logado): ?>
-                    <a href="login.php" class="button is-info is-large">Comece Agora</a>
+                    <a href="login.php" class="button is-success is-large">Comece Agora</a>
                 <?php else: ?>
-                    <a href="daoplay.php" class="button is-info is-large">Encontrar Jogos</a>
+                    <a href="daoplay.php" class="button is-success is-large">Encontrar Jogos</a>
                 <?php endif; ?>
             </div>
         </div>

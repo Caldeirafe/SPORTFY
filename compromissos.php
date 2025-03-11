@@ -83,7 +83,7 @@ $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="buttons mt-3">
                                     <?php if ($isCriador): ?>
                                         <!-- Botões de Editar, Excluir e Ver Participantes para o Criador -->
-                                        <a href="editar_evento.php?evento_id=<?= $evento['evento_id'] ?>" class="button is-warning">Editar</a>
+                                        <a href="editar_evento.php?evento_id=<?= $evento['evento_id'] ?>" class="button is-success">Editar</a>
                                         <form method="POST" action="deletar_evento.php" style="display:inline;">
                                             <input type="hidden" name="evento_id" value="<?= $evento['evento_id'] ?>">
                                             <button type="submit" class="button is-danger" onclick="return confirm('Tem certeza que deseja excluir este evento?')">Excluir</button>

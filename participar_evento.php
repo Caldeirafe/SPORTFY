@@ -46,6 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("INSERT INTO participacoes (usuario_id, evento_id) VALUES (?, ?)");
     $stmt->execute([$usuario_id, $evento_id]);
 
+    // Atualiza qtd. participantes
+    $stmt = $pdo->prepare("update eventos set inscritos = ? where evento_id = ?");
+    $stmt->execute([$evento['inscritos']+1, $evento_id]);
+
     // Redireciona para a página principal após a inscrição
     header('Location: daoplay.php?status=participou');
     exit;

@@ -13,8 +13,6 @@ $stmt->execute([$user_id]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
-<section id="section-edit" class="section">
-    <div class="container">
         <div class="box">
             <h3 class="title is-4 has-text-centered">Editar Perfil</h3>
 
@@ -86,5 +84,3 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                 </div>
             </form>
         </div>
-    </div>
-</section>

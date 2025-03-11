@@ -73,17 +73,16 @@ $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero is-success is-medium">
-        <div class="hero-body has-text-centered">
-            <p class="title">Da o Play</p>
-            <p class="subtitle">Encontre partidas e quadras disponíveis na sua região!</p>
-            <div class="container has-text-centered">
-                <?php if ($logado): ?>
-                    <!-- Usuário logado: mostrar botão "Criar Novo Jogo" -->
-                    <a href="perfil.php?Ajax=NovoJogo" class="button is-dark is-large">Criar Novo Jogo</a>
+
+    <section id="campo" class="hero is-medium">
+        <div class="hero-body" id="hero-body">
+            <div class="highlight" id="highlight">
+                <p class="title">Da o Play</p>
+                <p class="subtitle">Encontre partidas e quadras disponíveis na sua região!</p>
+                <?php if (!$logado): ?>
+                    <a href="login.php" class="button is-success is-large">Cadastre-se</a>
                 <?php else: ?>
-                    <!-- Usuário não logado: mostrar botão "Cadastre-se" -->
-                    <a href="cadastro.php" class="button is-dark is-large">Cadastre-se</a>
+                    <a href="daoplay.php" class="button is-success is-large">Criar Novo Jogo</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -118,7 +117,7 @@ $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="card is-flex is-flex-direction-column" style="height: 100%;">
                         <div class="card-content is-flex-grow-1">
                             <p class="title is-5"><?= htmlspecialchars($evento['evento_nome']) ?></p>
-                            <p><strong>Local:</strong> <?= htmlspecialchars($evento['evento_local']) ?></p>
+                            <p><strong>Local:</strong> <?=htmlspecialchars($evento['evento_local']) ?></p>
                             <p><strong>Esporte:</strong> <?= htmlspecialchars($evento['evento_esporte']) ?></p>
                             <p><strong>Data:</strong> <?= date('d/m/Y', strtotime($evento['evento_data'])) ?></p>
                             <p><strong>Horário:</strong> <?= date('H:i', strtotime($evento['evento_hora'])) ?></p>

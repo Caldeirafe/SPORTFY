@@ -79,9 +79,9 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                                 echo htmlspecialchars($idade); // Exibindo a idade?> Anos</p>
                             
                             <div class="buttons is-centered">
-                            <button class="button is-info is-fullwidth" onclick="carregarConteudo('perfil_info')">Início</button>
-                                <button class="button is-primary is-fullwidth" onclick="carregarConteudo('compromissos')">Meus Compromissos</button>
-                                <button class="button is-link is-fullwidth" onclick="carregarConteudo('criar_evento')">Criar Evento</button>
+                            <button class="button is-warning is-fullwidth" onclick="carregarConteudo('perfil_info')">Início</button>
+                                <button class="button is-warning is-fullwidth" onclick="carregarConteudo('compromissos')">Meus Compromissos</button>
+                                <button class="button is-warning is-fullwidth" onclick="carregarConteudo('criar_evento')">Criar Evento</button>
                                 <button class="button is-warning is-fullwidth" onclick="carregarConteudo('editar_perfil')">Editar Perfil</button>
                             </div>
                         </div>
