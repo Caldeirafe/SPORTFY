@@ -77,9 +77,9 @@ $participantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <!-- Sidebar do Perfil -->
                 <aside class="column is-3">
                     <div class="card">
-                        <div class="card-image has-text-centered">
+                    <div class="card-image has-text-centered">
                             <figure id="img-perfil" class="image is-128x128 is-inline-block">
-                                <img src="img/usuario.png" alt="Imagem do perfil">
+                            <img src="<?php echo $usuario['foto'] ? 'uploads/' . htmlspecialchars($usuario['foto']) : 'img/usuario.png'; ?>" alt="Imagem do perfil">
                             </figure>
                         </div>
                         <div class="card-content">
