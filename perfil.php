@@ -73,11 +73,11 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                             <p class="title is-4 has-text-centered"><?php echo htmlspecialchars($usuario['nome']); ?></p>
                             <p class="subtitle is-6 has-text-centered"><?php echo htmlspecialchars($usuario['sexo']); ?> | <?php
 
-                                $data_nascimento = $usuario['data_nascimento']; // Pegando a data do usuário
-                                $data_nascimento_obj = new DateTime($data_nascimento); // Criando um objeto DateTime
-                                $hoje = new DateTime(); // Pegando a data atual
-                                $idade = $hoje->diff($data_nascimento_obj)->y; // Calculando a diferença em anos
-                                echo htmlspecialchars($idade); // Exibindo a idade?> Anos</p>
+                                $data_nascimento = $usuario['data_nascimento']; 
+                                $data_nascimento_obj = new DateTime($data_nascimento); 
+                                $hoje = new DateTime(); 
+                                $idade = $hoje->diff($data_nascimento_obj)->y; 
+                                echo htmlspecialchars($idade); ?> Anos</p>
                             
                             <div class="buttons is-centered">
                             <button class="button is-warning is-fullwidth" onclick="carregarConteudo('perfil_info')">Início</button>
