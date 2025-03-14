@@ -80,7 +80,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                                 echo htmlspecialchars($idade); ?> Anos</p>
                             
                             <div class="buttons is-centered">
-                            <button class="button is-warning is-fullwidth" onclick="carregarConteudo('perfil_info')">Início</button>
+                            <button class="button is-warning is-fullwidth" onclick="location.reload();">Início</button>
                                 <button class="button is-warning is-fullwidth" onclick="carregarConteudo('compromissos')">Meus Compromissos</button>
                                 <button class="button is-warning is-fullwidth" onclick="carregarConteudo('criar_evento')">Criar Evento</button>
                                 <button class="button is-warning is-fullwidth" onclick="carregarConteudo('editar_perfil')">Editar Perfil</button>
