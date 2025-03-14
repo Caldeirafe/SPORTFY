@@ -48,7 +48,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbhtwoMur3kXRC3VLgZ2AObHk55K7IYMc" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=SUA CHAVE API AQUI!" async defer></script>
 
 
 </head>
